@@ -1,0 +1,23 @@
+
+
+provider "aws"{                                   // before we have to configure or establish the connection between local cmd to aws( we need to install aws cli)
+    region="eu-north-1"
+}
+resource "aws_vpc" "my_vpc"{
+    cidr_block="15.0.0.0/16"                    // here we are assigning the ip address to vpc , so we use cidr_block variable.
+    
+     tags={
+        Name="MY_vpc_by_terraform"            // this is code is used to give the name to vpc.
+      
+        }
+}
+resource "aws_subnet" "subnet" {                   //this block is create the subnet
+    vpc.id = aws_vpc.main.id                       // this is vpc is required to create subnet
+    cidr_block = "15.0.0.255/17"                   // assigning the ip address to subnet
+    Availibility_zone = "us-east-1"                // here we are chosing the Availibility_zone 
+
+    tags={
+        Name="subnet_by_terraform"                // giving name to subnet
+      
+    }    
+}
