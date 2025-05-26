@@ -3,14 +3,16 @@
 provider "aws"{                                   // before we have to configure or establish the connection between local cmd to aws( we need to install aws cli)
     region="eu-north-1"
 }
+
 resource "aws_vpc" "my_vpc"{
     cidr_block="15.0.0.0/16"                    // here we are assigning the ip address to vpc , so we use cidr_block variable.
     
      tags={
         Name="MY_vpc_by_terraform"            // this is code is used to give the name to vpc.
       
-        }
 }
+}
+
 resource "aws_subnet" "subnet" {                   //this block is create the subnet
     vpc.id = aws_vpc.main.id                       // this is vpc is required to create subnet
     cidr_block = "15.0.0.255/17"                   // assigning the ip address to subnet
@@ -18,7 +20,7 @@ resource "aws_subnet" "subnet" {                   //this block is create the su
     tags={
         Name="subnet_by_terraform"                // giving a name to subnet
       
-    }    
+}    
 }
 
 resource "aws_internet_gateway" "igw"{         // this code is create the internetgate way
@@ -28,15 +30,22 @@ tags = {
 Name = "internet_gateway_by_terraform"        // giving the name to internet gate way
 }
 }
-resource "aws_route_table" "route"{
+
+resource "aws_route_table" "route"{       //this code is create the route tabel same as gui. while creating route table we have to select the vpc .thats why we use vpc id for creating route_table.
 vpc_id = aws_vpc.vpc_main.id
-route{
+route {                                 // this will add cidr to table or adding values to the table.  adding the internetgate to route _table . to make the subnet private
 cidr_block="0.0.0.0/0"
 gateway_id= "aws_internet_gateway.igw.id
 }
 tags = {
   Name = "route_table_by_terraform"
-  }
+}
+}
+resource " aws_route_table_association" "subnet_association"{        // aws_route_table_association means adding the subnet to route table 
+subnet_id = aws_subnet.subnet.id
+route_table = aws_route_table.route.id
+}
+
 
 
 
