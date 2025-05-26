@@ -14,10 +14,31 @@ resource "aws_vpc" "my_vpc"{
 resource "aws_subnet" "subnet" {                   //this block is create the subnet
     vpc.id = aws_vpc.main.id                       // this is vpc is required to create subnet
     cidr_block = "15.0.0.255/17"                   // assigning the ip address to subnet
-    Availibility_zone = "us-east-1"                // here we are chosing the Availibility_zone 
-
+    Availibility_zone = "us-east-1"                // here we are chosing the Availibility_zone
     tags={
-        Name="subnet_by_terraform"                // giving name to subnet
+        Name="subnet_by_terraform"                // giving a name to subnet
       
     }    
 }
+
+resource "aws_internet_gateway" "igw"{         // this code is create the internetgate way
+vpc_id = aws_vpc.vpc_main.id                   // basically, we need to attacg the igw to vpc . so we are using vpc_id to establish the connection.
+tags = {
+
+Name = "internet_gateway_by_terraform"        // giving the name to internet gate way
+}
+}
+resource "aws_route_table" "route"{
+vpc_id = aws_vpc.vpc_main.id
+route{
+cidr_block="0.0.0.0/0"
+gateway_id= "aws_internet_gateway.igw.id
+}
+tags = {
+  Name = "route_table_by_terraform"
+  }
+
+
+
+
+
