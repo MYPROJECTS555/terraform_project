@@ -1,1 +1,253 @@
+provider "aws"{
+region = "eu-north-1"
+}
+resource "aws_vpc" "vpc"{
+cidr_block = "16.0.0.0/16"
+tags = {
+Name = "vpc_by_terraform"
+}
+}
+resource "aws_subnet" "subnet"{
+vpc_id = aws_vpc.vpc.id
+cidr_block = "16.0.0.0/17"
+availability_zone = "eu-north-1a"
+tags = {
+Name = "subnet_by_terraform"
+}
+}
+resource "aws_internet_gateway" "igw"{
+vpc_id= aws_vpc.vpc.id
+tags = {
+Name = "internetgateway_by_terraform"
+}
+}
+resource "aws_route_table" "table"{
+vpc_id = aws_vpc.vpc.id
+
+route{
+cidr_block = "0.0.0.0/0"
+gateway_id =aws_internet_gateway.igw.id
+}
+tags = {
+Name = "route_table_by_terraform"
+}
+}
+resource "aws_route_table_association" "subnet_association" {
+subnet_id = aws_subnet.subnet.id
+route_table_id =aws_route_table.table.id
+}
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+cat       terraform.tfstate
+                             It's a JSON file that records the mapping between the resources defined in your Terraform configuration (your .tf files) and the real-world infrastructure resources that exist in your cloud provider (like AWS).
+Source of Truth: For Terraform, the terraform.tfstate file is the ultimate source of truth about the current state of your infrastructure.
+-----
+
+{
+  "version": 4,
+  "terraform_version": "1.12.1",
+  "serial": 6,
+  "lineage": "979088a8-123c-2b1b-c8b2-0d77b1af8295",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "aws_internet_gateway",
+      "name": "igw",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:eu-north-1:897729120456:internet-gateway/igw-0b9cc6602ef41987c",
+            "id": "igw-0b9cc6602ef41987c",
+            "owner_id": "897729120456",
+            "tags": {
+              "Name": "internetgateway_by_terraform"
+            },
+            "tags_all": {
+              "Name": "internetgateway_by_terraform"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-044e8d0bec418eb46"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_vpc.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table",
+      "name": "table",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:eu-north-1:897729120456:route-table/rtb-0d7a9d12ee8d9bca2",
+            "id": "rtb-0d7a9d12ee8d9bca2",
+            "owner_id": "897729120456",
+            "propagating_vgws": [],
+            "route": [
+              {
+                "carrier_gateway_id": "",
+                "cidr_block": "0.0.0.0/0",
+                "core_network_arn": "",
+                "destination_prefix_list_id": "",
+                "egress_only_gateway_id": "",
+                "gateway_id": "igw-0b9cc6602ef41987c",
+                "ipv6_cidr_block": "",
+                "local_gateway_id": "",
+                "nat_gateway_id": "",
+                "network_interface_id": "",
+                "transit_gateway_id": "",
+                "vpc_endpoint_id": "",
+                "vpc_peering_connection_id": ""
+              }
+            ],
+            "tags": {
+              "Name": "route_table_by_terraform"
+            },
+            "tags_all": {
+              "Name": "route_table_by_terraform"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-044e8d0bec418eb46"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_internet_gateway.igw",
+            "aws_vpc.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table_association",
+      "name": "subnet_association",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-0f185a860dd4dbb5b",
+            "route_table_id": "rtb-0d7a9d12ee8d9bca2",
+            "subnet_id": "subnet-0adf8d40480b00d27",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_internet_gateway.igw",
+            "aws_route_table.table",
+            "aws_subnet.subnet",
+            "aws_vpc.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "subnet",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:eu-north-1:897729120456:subnet/subnet-0adf8d40480b00d27",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "eu-north-1a",
+            "availability_zone_id": "eun1-az1",
+            "cidr_block": "16.0.0.0/17",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0adf8d40480b00d27",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "897729120456",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "tags": {
+              "Name": "subnet_by_terraform"
+            },
+            "tags_all": {
+              "Name": "subnet_by_terraform"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-044e8d0bec418eb46"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "vpc",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:eu-north-1:897729120456:vpc/vpc-044e8d0bec418eb46",
+            "assign_generated_ipv6_cidr_block": false,
+            "cidr_block": "16.0.0.0/16",
+            "default_network_acl_id": "acl-0b9dec93350190b2b",
+            "default_route_table_id": "rtb-0719d4cc896358b4a",
+            "default_security_group_id": "sg-0ede58860e01b0171",
+            "dhcp_options_id": "dopt-0c7ed55fbdf9ada90",
+            "enable_dns_hostnames": false,
+            "enable_dns_support": true,
+            "enable_network_address_usage_metrics": false,
+            "id": "vpc-044e8d0bec418eb46",
+            "instance_tenancy": "default",
+            "ipv4_ipam_pool_id": null,
+            "ipv4_netmask_length": null,
+            "ipv6_association_id": "",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_network_border_group": "",
+            "ipv6_ipam_pool_id": "",
+            "ipv6_netmask_length": 0,
+            "main_route_table_id": "rtb-0719d4cc896358b4a",
+            "owner_id": "897729120456",
+            "tags": {
+              "Name": "vpc_by_terraform"
+            },
+            "tags_all": {
+              "Name": "vpc_by_terraform"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
+
 
