@@ -37,6 +37,23 @@ subnet_id = aws_subnet.subnet.id
 route_table_id =aws_route_table.table.id
 }
 
+resource "aws_instance" "ec2" {
+ami = "ami-00f34bf9aeacdf007"
+instance_type =" t2.micro "
+key_name = "private_key_1"
+security_groups = ["default"]
+associate_public_ip_address = true
+tags = {
+Name = "ec2_by_terraform"
+}
+root_block_device {
+volume_size = 15
+volume_type = "gp2"
+delete_on_termination=true
+}
+}
+
+
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 cat       terraform.tfstate
