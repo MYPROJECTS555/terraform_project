@@ -54,6 +54,7 @@ subnet_id = aws_subnet.subnet.id                                      // here , 
 key_name = "private_key_1"                                           // this code is used to give keypair name. We can use the kepair while login to ec2-instance.
 // security_groups = ["default"]                                       //securitygroup :here we are giving default security group. no need to add default security group will be creted if didn't mention anything.
 associate_public_ip_address = true                                 // this code is used to enable the public address. same as gui
+user_data = file("scripts.sh")
 
 tags = {
 Name = "ec2_by_terraform"
@@ -65,10 +66,67 @@ volume_type= "gp2"                                         // this code defines 
 delete_on_termination = true                               // this code will delete ebs volume during termination of ec2 instance.
 }
 }
-user_data = file("scripts.sh")                       // user_data: this is used to install software during ec2 instance lanching. frist we have to create the file that should the what package or softare need to install during instance lanching .for example, jenkins,docker.
+                       // user_data: this is used to install software during ec2 instance lanching. frist we have to create the file that should the what package or softare need to install during instance lanching .for example, jenkins,docker.
 
 
+-------------------------------------------------------------------------------------
 
+provider "aws" {
+region = "eu-north-1"
+}
+resource "aws_vpc" "main"{
+cidr_block = "16.0.0.0/16"
+tags = {
+Name = "vpc_by_terraform"
+}
+}
+resource "aws_subnet" "public"{
+vpc_id = aws_vpc.main.id
+cidr_block = "16.0.0.0/17"
+availability_zone = "eu-north-1a"
+tags = {
+Name = "subnet_by_terraform"
+}
+}
+resource "aws_internet_gateway" "igw"{
+vpc_id =aws_vpc.main.id
+tags = {
+Name = "internet_by_terraform"
+}
+}
+resource "aws_route_table" "traffic"{
+vpc_id =aws_vpc.main.id
+route{
+cidr_block = "0.0.0.0/0"
+gateway_id = aws_internet_gateway.igw.id
+}
+tags = {
+Name = "route_table_by_terraform"
+}
+}
+resource "aws_route_table_association" "pub"{
+subnet_id=aws_subnet.public.id
+route_table_id= aws_route_table.traffic.id
+}
+
+resource "aws_instance" "ec2" {
+ami = "ami-02ec57994fa0fae21"
+instance_type = "t3.micro"
+key_name = "awsterraformkey"
+subnet_id = aws_subnet.public.id
+associate_public_ip_address = true
+user_data = file("script.sh")
+
+root_block_device {
+volume_size = 16
+volume_type = "gp2"
+delete_on_termination = true
+}
+
+tags = {
+Name = "Ec2_by_terraform"
+}
+}
 
   
  
