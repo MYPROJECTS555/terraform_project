@@ -52,7 +52,7 @@ ami = "ami-00f34bf9aeacdf007"                                           // we ha
 instance_type ="t2.micro"                                              //choosing the instance type
 subnet_id = aws_subnet.subnet.id                                      // here , selecting subnet for hosting ec2-instance(public_subnet).we are using subnet id form the vpc
 key_name = "private_key_1"                                           // this code is used to give keypair name. We can use the kepair while login to ec2-instance.
-security_groups = ["default"]                                       //securitygroup :here we are giving default security group.
+// security_groups = ["default"]                                       //securitygroup :here we are giving default security group. no need to add default security group will be creted if didn't mention anything.
 associate_public_ip_address = true                                 // this code is used to enable the public address. same as gui
 
 tags = {
