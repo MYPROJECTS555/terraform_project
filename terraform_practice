@@ -1,14 +1,14 @@
-provider "aws"{
+provider "aws" {
 region = "eu-north-1"
 }
-resource "aws_vpc" "vpc"{
+resource "aws_vpc" "main"{
 cidr_block = "16.0.0.0/16"
 tags = {
 Name = "vpc_by_terraform"
 }
 }
-resource "aws_subnet" "subnet"{
-vpc_id = aws_vpc.vpc.id
+resource "aws_subnet" "public"{
+vpc_id = aws_vpc.main.id
 cidr_block = "16.0.0.0/17"
 availability_zone = "eu-north-1a"
 tags = {
@@ -16,42 +16,44 @@ Name = "subnet_by_terraform"
 }
 }
 resource "aws_internet_gateway" "igw"{
-vpc_id= aws_vpc.vpc.id
+vpc_id =aws_vpc.main.id
 tags = {
-Name = "internetgateway_by_terraform"
+Name = "internet_by_terraform"
 }
 }
-resource "aws_route_table" "table"{
-vpc_id = aws_vpc.vpc.id
-
+resource "aws_route_table" "traffic"{
+vpc_id =aws_vpc.main.id
 route{
 cidr_block = "0.0.0.0/0"
-gateway_id =aws_internet_gateway.igw.id
+gateway_id = aws_internet_gateway.igw.id
 }
 tags = {
 Name = "route_table_by_terraform"
 }
 }
-resource "aws_route_table_association" "subnet_association" {
-subnet_id = aws_subnet.subnet.id
-route_table_id =aws_route_table.table.id
+resource "aws_route_table_association" "pub"{
+subnet_id=aws_subnet.public.id
+route_table_id= aws_route_table.traffic.id
 }
 
 resource "aws_instance" "ec2" {
-ami = "ami-00f34bf9aeacdf007"
-instance_type =" t2.micro "
-key_name = "private_key_1"
-security_groups = ["default"]
+ami = "ami-02ec57994fa0fae21"
+instance_type = "t3.micro"
+key_name = "awsterraformkey"
+subnet_id = aws_subnet.public.id
 associate_public_ip_address = true
-tags = {
-Name = "ec2_by_terraform"
-}
+
 root_block_device {
-volume_size = 15
+volume_size = 16
 volume_type = "gp2"
-delete_on_termination=true
+delete_on_termination = true
+}
+
+tags = {
+Name = "Ec2_by_terraform"
 }
 }
+
 
 
 
