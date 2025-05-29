@@ -58,13 +58,14 @@ associate_public_ip_address = true                                 // this code 
 tags = {
 Name = "ec2_by_terraform"
 }
-root_block_device{                                          // this is used to attach the ebs-volume to the ec2-instance. note gp2 nothing but ssd.
-volume_size= 16
-volume_type= "gp2"
-delete_on_termination = true
-}
-}
 
+root_block_device{                                          // this is used to attach the ebs-volume to the ec2-instance. note gp2 nothing but ssd.
+volume_size= 16                                             // here we have to give  size of EBS_volume 
+volume_type= "gp2"                                         // this code defines the volume_type . type of storages for example :SSD, HHD.
+delete_on_termination = true                               // this code will delete ebs volume during termination of ec2 instance.
+}
+}
+user_data = file("scripts.sh")                       // user_data: this is used to install software during ec2 instance lanching. frist we have to create the file that should the what package or softare need to install during instance lanching .for example, jenkins,docker.
 
 
 
