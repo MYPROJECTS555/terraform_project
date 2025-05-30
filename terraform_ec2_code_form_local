@@ -1,0 +1,23 @@
+provider "aws" {
+    region = "eu-north-1"
+    access_key = "  "
+    secret_key = " "                              // git hub will not store access_key and secret_key.that's why we didn't mentioned.
+}
+resource "aws_instance" "ec2" {
+    ami = "ami-00f34bf9aeacdf007"
+    instance_type = "t3.medium"
+    subnet_id = "subnet-05a456b078ed6854b"             // here we have to mention subnet_id
+    vpc_security_group_ids = ["sg-0216e1b21dd16d64a"]   // here we have to mention security group ID
+    key_name = "private_key_1"
+
+    user_data = file("scripts.sh")
+    
+    root_block_device{
+        volume_size = 20
+        volume_type = "gp2"
+    }
+    tags = {
+        Name = "terraform_admin_server"
+    }
+    
+}
