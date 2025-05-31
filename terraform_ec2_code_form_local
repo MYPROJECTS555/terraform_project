@@ -19,5 +19,36 @@ resource "aws_instance" "ec2" {
     tags = {
         Name = "terraform_admin_server"
     }
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+with out error 
+
+provider "aws" {
+    region = "eu-north-1"
+    access_key = "IA5CBGTJDEPGEJGZNH"
+    secret_key = "CzS52tGo8NdDtV8lnrGrJJkRm+p1ZULMN+Kmc"
+}
+resource "aws_instance" "ec2" {
+    ami = "ami-00f34bf9aeacdf007"
+    instance_type = "t3.medium"
+    key_name = "private_key_1"
+    subnet_id = "subnet-0ab3aadf95217a62c"
+    associate_public_ip_address = true
+    //vpc_security_group_ids = ["sg-09337628ec06409fc"]
+
+    root_block_device{
+        volume_size = 20
+        volume_type ="gp2"
+        delete_on_termination = true
+    }
+    
+    tags = {
+        Name = "ec2_by_terraform"
+    }
+    user_data = file("script.sh")
+
+}
     
 }
