@@ -1,0 +1,6 @@
+pipeline
+{
+parameters
+{
+choice(name :'terraformaction' choice :['apply','destroy'],description:',choose the terraform action')
+}
