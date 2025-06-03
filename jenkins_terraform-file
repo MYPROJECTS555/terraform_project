@@ -4,3 +4,16 @@ parameters
 {
 choice(name :'terraformaction' choice :['apply','destroy'],description:',choose the terraform action')
 }
+environment
+{
+AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY_ID = credentials('AWS_SECRET_ACCESS_KEY_ID')
+}
+agent any
+stages
+{
+stage('checkout')
+{
+steps
+
+
