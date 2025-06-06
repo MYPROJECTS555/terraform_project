@@ -2,71 +2,25 @@ pipeline
 {
     parameters
     {
-        choice(name :'terraformaction' choice :['apply','destroy'],description:',choose the terraform action')
+        choice(name:'terraformAction', choice:['apply','destroy'],description:'choose any terraform action')
     }
     environment
     {
-              AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-              AWS_SECRET_ACCESS_KEY_ID = credentials('AWS_SECRET_ACCESS_KEY_ID')
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY_ID = credential('AWS_SECRET_ACCESS_KEY_ID')
     }
     agent any
     stages
     {
-        stage('checkout')
+        stage('git-checkout')
         {
-            steps
-            {
-               git branch:'main',url:'https://github.com/MYPROJECTS555/terraform_project.git'
-            }
-        }
+          steps
+             {
+                git branch:'terraform-project-1',url:'https://github.com/MYPROJECTS555/terraform_project.git'
+             }   
+
+         }
+         
+        
     }
-        stage ('plan')
-        {
-            steps
-            {
-                sh '''
-
-                'pwd;cd project-3/ ; terraform init'
-                'pwd;cd project-3/ ; terraform plan -out tfplan'
-                'pwd;cd project-3/ ; terraform show -no-color tfplan > tfplan.txt'
-
-                '''
-            }
-        }
-        stage ('approval')
-        {
-            script
-            {
-                def plan = readFile 'project-3/tfplan.txt'
-                input message: "do you want to proceed with terraform action "
-                parameters: [text(name: 'plan',description : 'please review the plan', defaultvalue : plan)]
-
-            }
-        }
-        stage('Apply or Destroy')
-        {
-            when
-            {
-                expression{
-                    return params.terraformAction == 'apply' || params.terraformAction == 'destroy'
-                }
-            }
-            steps{
-                script
-                {
-                    if (params.terraformAction == 'apply')
-                    {
-                        
-                        sh "pwd,cd project-3/" ;terraform apply -input=false tfplan"
-                    }
-                    else if (params.terraformAction == 'destroy')
-                    {
-                        
-                       sh "pwd,cd project-3/" ;terraform destroy -auto-approve"
-                    }
-
-                }
-            }
-        }       
-}
 }
