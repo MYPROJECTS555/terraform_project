@@ -2,25 +2,35 @@ pipeline
 {
     parameters
     {
-        choice(name:'terraformAction', choice:['apply','destroy'],description:'choose any terraform action')
+        choice( name:'terraformAction', choice:['apply','destroy'], description:'choose any terraformAction' )
     }
     environment
     {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY_ID = credential('AWS_SECRET_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY_ID = credentials ('AWS_SECRET_ACCESS_KEY_ID')
     }
     agent any
     stages
     {
         stage('git-checkout')
         {
-          steps
-             {
-                git branch:'terraform-project-1',url:'https://github.com/MYPROJECTS555/terraform_project.git'
-             }   
+            steps
+            {
+              git branch:'terraform-project-1',url:'https://github.com/MYPROJECTS555/terraform_project.git'
+            }
+            
+        }
+    }
+    stage('plan')
+    {
+        steps
+        {
+            sh'''
+            'pwd;cd project-realtime/;' terraform init
+            'pwd;cd project-realtime/;' terraform plan -out tfplan
+            'pwd;cd project-realtime/;' terraform show -no-color tfplan < tfplan.txt
+            '''
+        }
 
-         }
-         
-        
     }
 }
