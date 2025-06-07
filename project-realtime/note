@@ -1,0 +1,2 @@
+project-realtime is a terraform folder . inside that there are two file main.tf and shell.sh. when pipeline tigger . it come inside the folder and run the main.tf file and 
+create the resource . shell.sh is user data script. 
