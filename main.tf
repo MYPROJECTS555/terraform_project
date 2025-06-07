@@ -1,7 +1,6 @@
 provider "aws" {
     region = "eu-north-1"
-    access_key = "KIA5CBGTJDEEQ67UIEI"
-    secret_key = "e2z1k672krxO+6jJMgeO6PtaAGLLsZoy+SpP+wD"  // we are lanching the instance form local 
+    // we are lanching the instance form local 
 }
 resource "aws_instance" "ec2" {
     ami = "ami-05d3e0186c058c4dd"
