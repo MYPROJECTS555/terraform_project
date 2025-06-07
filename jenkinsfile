@@ -51,31 +51,29 @@ pipeline
         stage('apply-or-destroy') {
             when {
                 expression {
-                    return params.terraformaction == 'apply' || params.terraformaction == 'destroy'
+                    
+                    return params.terraformAction == 'apply' || params.terraformAction == 'destroy'
                 }
             }
             steps {
                 script {
-                    if (params.terraformaction == 'apply') 
-                       {
+                    
+                    if (params.terraformAction == 'apply') {
                         echo "Running terraform apply..."
                         sh '''
                         cd project-realtime/ && \\
                         terraform apply -input=false tfplan
                         '''
-                         } 
-                    else if (params.terraformaction == 'destroy') 
-                        {
+                    } else if (params.terraformAction == 'destroy') {
                         echo "Running terraform destroy..."
                         sh '''
                         cd project-realtime/ && \\
                         terraform destroy -auto-approve
                         '''
-                         }
+                    }
                 }
             }
         }
-
     
     
     }
