@@ -7,7 +7,7 @@ pipeline
     environment
     {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY')
     }
     agent any
     stages
@@ -30,13 +30,13 @@ pipeline
               terraform init                       // making the terraform folder or initialzation
               terraform plan -out tfplan          
               terraform show -no-color tfplan < tfplan.txt
-            '''
+              '''
              }
 
         }
         stage ('approval')
         {
-          step
+          steps
             {
                 script 
                 {
@@ -48,6 +48,34 @@ pipeline
             }
 
         }
+        stage('apply-or-destroy') {
+            when {
+                expression {
+                    return params.terraformaction == 'apply' || params.terraformaction == 'destroy'
+                }
+            }
+            steps {
+                script {
+                    if (params.terraformaction == 'apply') 
+                       {
+                        echo "Running terraform apply..."
+                        sh '''
+                        cd project-realtime/ && \\
+                        terraform apply -input=false tfplan
+                        '''
+                         } 
+                    else if (params.terraformaction == 'destroy') 
+                        {
+                        echo "Running terraform destroy..."
+                        sh '''
+                        cd project-realtime/ && \\
+                        terraform destroy -auto-approve
+                        '''
+                         }
+                }
+            }
+        }
+
     
     
     }
