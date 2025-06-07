@@ -25,11 +25,11 @@ pipeline
         steps
               {
               sh '''
-              pwd                                    // it print the working dir
-              cd project-realtime/                  // it go inside the project-realtime folder
-              terraform init                       // making the terraform folder or initialzation
-              terraform plan -out tfplan          
-              terraform show -no-color tfplan < tfplan.txt
+              pwd                                    
+              cd project-realtime/                 
+              terraform init                       
+              terraform plan -out=tfplan          
+              terraform show -no-color tfplan > tfplan.txt
               '''
              }
 
