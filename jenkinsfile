@@ -7,7 +7,7 @@ pipeline
     environment
     {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY_ID = credentials ('AWS_SECRET_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY_ID')
     }
     agent any
     stages
@@ -26,9 +26,11 @@ pipeline
         steps
         {
             sh'''
-            'pwd;cd project-realtime/;' terraform init
-            'pwd;cd project-realtime/;' terraform plan -out tfplan
-            'pwd;cd project-realtime/;' terraform show -no-color tfplan < tfplan.txt
+              pwd                                    // it print the working dir
+              cd project-realtime/                  // it go inside the project-realtime folder
+              terraform init                       // making the terraform folder or initialzation
+              terraform plan -out tfplan          
+              terraform show -no-color tfplan < tfplan.txt
             '''
         }
 
