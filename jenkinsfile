@@ -40,7 +40,7 @@ pipeline
             {
                 script 
                 {
-                   def plan = readFile 'cd project-realtime/tfplan.txt'
+                   def plan = readFile 'project-realtime/tfplan.txt'
                    input message : "do you want to proceed with terraform action"
                    parameters[text(name: 'plan',description:'please review the plan', defaultValue:plan)]
                 }
