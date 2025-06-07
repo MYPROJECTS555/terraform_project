@@ -7,7 +7,7 @@ pipeline
     environment
     {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY')
+        AWS_SECRET_ACCESS_KEY = credentials ('AWS_SECRET_ACCESS_KEY_ID')
     }
     agent any
     stages
@@ -30,8 +30,22 @@ pipeline
               terraform init                       // making the terraform folder or initialzation
               terraform plan -out tfplan          
               terraform show -no-color tfplan < tfplan.txt
-              '''
+            '''
              }
+
+        }
+        stage ('approval')
+        {
+          step
+            {
+                script 
+                {
+                   def plan = readFile 'cd project-realtime/tfplan.txt'
+                   input message : "do you want to proceed with terraform action"
+                   parameters[text(name: 'plan',description:'please review the plan', defaultValue:plan)]
+                }
+
+            }
 
         }
     
