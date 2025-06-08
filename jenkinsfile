@@ -42,7 +42,7 @@ pipeline
                 {
                     def plan = readFile 'project-realtime/tfplan.txt'
                     input message : "do you want to continue with terraformAction",
-                    parameters: [test(name:'plan',description:'please review the plan',defaultValue:plan)]
+                    parameters: [text(name:'plan',description:'please review the plan',defaultValue:plan)]
                 }
             }
         }
