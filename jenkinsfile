@@ -2,7 +2,7 @@ pipeline
 {
     parameters
     {
-        choice( name: 'terraformAction', choices:['apply','destroy'], description:'choose any terraformAction')
+        choices(name:'terraformAction',choice:['apply','destroy'],description:'choose any terraforaction')
     }
     environment
     {
@@ -18,64 +18,62 @@ pipeline
             {
               git branch:'terraform-project-1',url:'https://github.com/MYPROJECTS555/terraform_project.git'
             }
-            
+
+        
         }
         stage('plan')
         {
-        steps
-              {
-              sh '''
-              pwd                                    
-              cd project-realtime/                 
-              terraform init                       
-              terraform plan -out=tfplan          
-              terraform show -no-color tfplan > tfplan.txt
-              '''
-             }
-
-        }
-        stage ('approval')
-        {
-          steps
+            steps
             {
-                script 
+               sh '''
+               cd project-realtime
+               terraform init
+               terraform plan -out=tfplan
+               terraform show -no-colot tfplan > tfplan.txt
+               '''
+
+            }
+        }
+        stage('approval')
+        {
+            steps
+            {
+                script
                 {
-                   def plan = readFile 'project-realtime/tfplan.txt'
-                   input message : "do you want to proceed with terraform action",
-                   parameters: [text(name: 'plan',description:'please review the plan', defaultValue:plan)]
-                }
-
-            }
-
-        }
-        stage('apply-or-destroy') {
-            when {
-                expression {
-                    
-                    return params.terraformAction == 'apply' || params.terraformAction == 'destroy'
-                }
-            }
-            steps {
-                script {
-                    
-                    if (params.terraformAction == 'apply') {
-                        echo "Running terraform apply..."
-                        sh '''
-                        cd project-realtime/ && \\
-                        terraform apply -input=false tfplan
-                        '''
-                    } else if (params.terraformAction == 'destroy') {
-                        echo "Running terraform destroy..."
-                        sh '''
-                        cd project-realtime/ && \\
-                        terraform destroy -auto-approve
-                        '''
-                    }
+                    def plan = readFile 'project-realtime/tfplan.txt'
+                    input message : 'do you want to continue with terraformAction',
+                    parameters:[test(name:'plan',description:'please review the plan',defaultValue:plan)]
                 }
             }
         }
-    
-    
+        stage('approval or destroy')
+        {
+            when
+            {
+                experssion
+                {
+                  return params.terraformAction = 'apply' || params.terraformAction = 'destroy'
+                }
+
+            }
+            steps
+            {   
+                script
+                {
+                if (params.terraformAction='apply')
+                {
+                    echo " terraform apply is running"
+                    cd project-realtime/ && \\
+                    terraform apply -input=false tfplan
+                }
+                else if (params.terraformAction ='destroy')
+                {
+                    echo " terraform destroy is running"
+                    cd project-realtime/ && \\
+                    terraform destroy -auto-approve
+                }
+                }
+            }
+        }
     }
-    
 }
