@@ -29,7 +29,7 @@ pipeline
                cd project-realtime
                terraform init
                terraform plan -out=tfplan
-               terraform show -no-colot tfplan > tfplan.txt
+               terraform show -no-color tfplan > tfplan.txt
                '''
 
             }
