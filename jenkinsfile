@@ -52,7 +52,8 @@ pipeline
             {
                 experssion
                 {
-                  return params.terraformAction = 'apply' || params.terraformAction = 'destroy'
+                   return params.terraformAction == 'apply' || params.terraformAction == 'destroy'
+
                 }
 
             }
@@ -60,18 +61,20 @@ pipeline
             {   
                 script
                 {
-                if (params.terraformAction == 'apply')
-                {
-                    echo " terraform apply is running"
-                    cd project-realtime/ 
-                    terraform apply -input=false tfplan
-                }
-                else if (params.terraformAction == 'destroy')
-                {
-                    echo " terraform destroy is running"
-                    cd project-realtime/ 
-                    terraform destroy -auto-approve
-                }
+                if (params.terraformAction == 'apply') {
+                        echo "Running terraform apply..."
+                        sh '''
+                        cd project-realtime/ && \\
+                        terraform apply -input=false tfplan
+                        '''
+                    } else if (params.terraformAction == 'destroy') {
+                        echo "Running terraform destroy..."
+                        sh '''
+                        cd project-realtime/ && \\
+                        terraform destroy -auto-approve
+                        '''
+                    }
+
                 }
             }
         }
