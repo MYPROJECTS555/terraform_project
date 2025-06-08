@@ -2,7 +2,7 @@ pipeline
 {
     parameters
     {
-        choices(name:'terraformAction',choice:['apply','destroy'],description:'choose any terraforaction')
+        choice (name:'terraformAction',choices:['apply','destroy'],description:'choose any terraforaction')
     }
     environment
     {
@@ -50,7 +50,7 @@ pipeline
         {
             when
             {
-                experssion
+                expression
                 {
                    return params.terraformAction == 'apply' || params.terraformAction == 'destroy'
 
