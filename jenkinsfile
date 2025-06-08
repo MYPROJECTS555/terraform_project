@@ -63,13 +63,13 @@ pipeline
                 if (params.terraformAction == 'apply')
                 {
                     echo " terraform apply is running"
-                    cd project-realtime && \\
+                    cd project-realtime/ 
                     terraform apply -input=false tfplan
                 }
                 else if (params.terraformAction == 'destroy')
                 {
                     echo " terraform destroy is running"
-                    cd project-realtime/ && \\
+                    cd project-realtime/ 
                     terraform destroy -auto-approve
                 }
                 }
