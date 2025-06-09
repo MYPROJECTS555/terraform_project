@@ -1,0 +1,73 @@
+Core Concepts & Fundamentals
+What is IaC, and how does Terraform fit?
+
+Answer: IaC means managing infrastructure with code. Terraform is a tool that lets you write code (HCL) to define and manage your cloud and on-premise infrastructure in a repeatable way.
+Core Terraform workflow?
+
+Answer:
+Write: Define infrastructure in .tf files.
+Plan: See what changes Terraform will make without applying them.
+Apply: Execute the planned changes to create or modify resources.
+What is a Terraform state file? How to manage it in a team?
+
+Answer: It's a file that tracks the real-world resources Terraform manages. It's crucial for knowing what's deployed. In a team, store it remotely (e.g., S3) with state locking to prevent conflicts.
+terraform refresh vs. terraform plan?
+
+Answer:
+refresh: Updates the state file to match the actual infrastructure, no changes are proposed.
+plan: Compares your code with the state file and shows proposed changes to make actual infrastructure match your code.
+Terraform providers and versions?
+
+Answer: Providers are plugins (e.g., AWS, Azure) that let Terraform interact with different platforms. You specify their required versions in your configuration to ensure compatibility.
+Modules & Reusability
+What are Terraform modules, and why are they important?
+
+Answer: Modules are reusable, self-contained blocks of Terraform code. They help organize, reuse, and standardize infrastructure components, especially in large projects.
+How to structure a complex Terraform project?
+
+Answer: Use a main directory for environments (dev, prod) and a modules directory for reusable components (like VPC, EC2 app). Each environment calls modules with specific variables.
+How to pass variables and outputs between modules?
+
+Answer: Define variable blocks in the child module and output blocks. The parent module passes values to these variables and reads the child's outputs.
+State Management & Best Practices
+Terraform workspaces? When to use/limitations?
+
+Answer: Workspaces allow separate state files for the same configuration (e.g., dev/prod). Good for small variations or testing. Limitations: not true isolation, often better to use separate folders for distinct environments.
+How to handle sensitive data?
+
+Answer: Never hardcode it. Use environment variables, mark variables as sensitive=true, or, ideally, integrate with a secrets management service like AWS Secrets Manager or HashiCorp Vault.
+terraform import? Challenges?
+
+Answer: Used to bring existing, manually created resources under Terraform's management. Challenges: manual mapping, potential for immediate drift, and not all resources are easily importable.
+Dependencies between resources?
+
+Answer:
+Implicit: Terraform automatically figures out dependencies when one resource references another. (Preferred)
+Explicit (depends_on): You manually tell Terraform one resource must be created/ready before another (use when implicit isn't enough).
+Advanced Concepts & Scenarios
+null_resource and local-exec/remote-exec? Example?
+
+Answer: null_resource is a placeholder for running commands via local-exec (on your machine) or remote-exec (on the deployed server). Example: running a script after an EC2 instance is created to set up software.
+Drift detection and remediation?
+
+Answer: terraform plan detects drift (differences between code and actual infrastructure). To fix it, either adjust your code to match reality or run terraform apply to revert reality to your code's definition.
+Idempotency in Terraform?
+
+Answer: Means running the same configuration multiple times gives the same result without unintended side effects. Terraform achieves this by defining the desired state and comparing it with the current state via the state file and provider APIs.
+CI/CD for Terraform? Tools?
+
+Answer: Use version control (Git), automate terraform init, validate, plan (for review), and apply (after approval). Tools: Jenkins, GitLab CI, GitHub Actions, Azure DevOps, or Terraform Cloud.
+Troubleshooting & Debugging
+Debugging a failed terraform apply?
+
+Answer: Read the error message carefully, check the line number, run terraform validate, review the plan, check provider docs, enable TF_LOG=DEBUG, and check cloud provider logs.
+Terraform taint? Alternatives?
+
+Answer: taint marks a resource for forced destruction and recreation on the next apply. Use when a resource is corrupted. Alternatives (often preferred): deleting the resource manually and letting Terraform recreate it, or updating an attribute that naturally forces replacement.
+Scenario-Based Questions
+Deploying a highly available web app on AWS?
+
+Answer: Use a VPC module for multiple AZs. Deploy an Auto Scaling Group (ASG) across private subnets for instances, an Application Load Balancer (ALB) in public subnets, and Multi-AZ RDS for the database.
+Smooth Terraform collaboration with a growing team?
+
+Answer: Use a remote backend with state locking. Structure with modules. Have separate configurations/workspaces for different environments. Implement a CI/CD pipeline with plan review. Enforce code reviews and clear documentation.
