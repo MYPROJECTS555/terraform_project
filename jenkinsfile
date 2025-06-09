@@ -65,13 +65,13 @@ pipeline
                         echo "Running terraform apply..."
                         sh '''
                         cd project-realtime/ && \\
-                        terraform apply -input=false tfplan
+                        terraform apply -input=false tfplan    // -input=false .it used for during terraform apply it will ask the input. if we use input=false no need to give any input values.
                         '''
                     } else if (params.terraformAction == 'destroy') {
                         echo "Running terraform destroy..."
                         sh '''
                         cd project-realtime/ && \\
-                        terraform destroy -auto-approve
+                        terraform destroy -auto-approve    // -auto-approve during destroy proccess no need to give any input value.automaticall it destroy the resource.
                         '''
                     }
 
