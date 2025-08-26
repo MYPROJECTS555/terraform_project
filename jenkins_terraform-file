@@ -44,29 +44,35 @@ AWS_SECRET_ACCESS_KEY_ID = credentials('AWS_SECRET_ACCESS_KEY_ID')
         {
             when
             {
-                expression{
+                expression
+                 {
                     return params.terraformAction == 'apply' || params.terraformAction == 'destroy'
-                }
+                 }
             }
-            step{
-                script
-                {
-                    if (params.terraformAction == 'apply')
+           
+            steps {
+                script {
+                    if (params.terraformAction == 'apply') 
                     {
-                        
-                        sh "pwd,cd project-3/" ;terraform apply -input=false tfplan"
+                        echo "terraform apply is running"
+                        sh '''
+                        cd project/
+                        terraform apply -input=false tfplan
+                        '''
                     }
                     else if (params.terraformAction == 'destroy')
                     {
-                        
-                       sh "pwd,cd project-3/" ;terraform destroy -auto-approve"
+                        echo "terraform destroy is running"
+                        sh '''
+                        cd project/
+                        terraform destroy -auto-approve
+                        '''
                     }
-
                 }
             }
         }       
 }
-}
+
 
 
 
