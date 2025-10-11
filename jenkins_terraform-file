@@ -3,8 +3,9 @@ pipeline{
         choice(name :'terraformaction' choice :['apply','destroy'],description:',choose the terraform action')
     }
     environment{
-AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY_ID = credentials('AWS_SECRET_ACCESS_KEY_ID')
+
+              AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+              AWS_SECRET_ACCESS_KEY_ID = credentials('AWS_SECRET_ACCESS_KEY_ID')
     }
     agent any
     stages
@@ -21,13 +22,12 @@ AWS_SECRET_ACCESS_KEY_ID = credentials('AWS_SECRET_ACCESS_KEY_ID')
         {
             steps
             {
-                sh '''
-
-                'pwd;cd project-3/ ; terraform init'
-                'pwd;cd project-3/ ; terraform plan -out tfplan'
-                'pwd;cd project-3/ ; terraform show -no-color tfplan > tfplan.txt'
-
-                '''
+                       sh '''
+                         cd project-3/
+                         terraform init
+                         terraform plan -out tfplan
+                          terraform show -no-color tfplan > tfplan.txt
+                          '''
             }
         }
         stage ('approval')
