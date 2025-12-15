@@ -8,11 +8,11 @@ provider "aws" {
   secret_key = ""
 }
 
-module "vpc" {
-  source = "./modules/vpc"  // it will take value from vpc inside the modules folder
+module "vpc" {                                 // module name can be anything  just giving the name for it.
+  source = "./modules/vpc"                    // it will take value from vpc inside the modules folder
 
-  vpc_cidr        = "10.0.0.0/16"
-  public_subnet_cidr  = "10.0.1.0/24"
+  vpc_cidr        = "10.0.0.0/16"                    // assigning ip address for vpc and subnets 
+  public_subnet_cidr  = "10.0.1.0/24"               
   private_subnet_cidr = "10.0.2.0/24"
 }
 
@@ -24,5 +24,6 @@ modules/
     main.tf
     variables.tf
     outputs.tf
+
 
 */
