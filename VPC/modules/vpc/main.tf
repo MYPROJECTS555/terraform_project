@@ -29,7 +29,7 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
   vpc_id                  = aws_vpc.terraform-vpc.id
   cidr_block              = var.private_subnet_cidr
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = false                          //prevents EC2 instances launched in that subnet from automatically receiving a public IPv4 address. Instances get only a private IP by default.
 
   tags = {
     Name = "tf-private-subnet"
@@ -53,3 +53,4 @@ resource "aws_route_table_association" "public_assoc" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
+
