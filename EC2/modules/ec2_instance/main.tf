@@ -1,6 +1,4 @@
-provider "aws" {
-    region = "eu-north-1"
-}
+
 resource "aws_instance" "ec2" {  
   ami                      = var.ami
   instance_type            = var.instance_type
@@ -17,4 +15,5 @@ resource "aws_instance" "ec2" {
   tags = { 
     Name = "ec2-server" 
   }
+
 }
