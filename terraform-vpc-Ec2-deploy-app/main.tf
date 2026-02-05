@@ -102,4 +102,13 @@ resource "aws_instance" "server" {
       "sudo python3 app.py &",
     ]
   }
+provisioner "local-exec" {
+  command = <<EOT
+echo "=== EC2 Flask App Deployed ===" > deploy.log
+echo "Public IP: ${self.public_ip}" >> deploy.log  
+echo "Access: http://${self.public_ip}:5000" >> deploy.log
+echo "Timestamp: $(date)" >> deploy.log
+EOT
 }
+}
+
