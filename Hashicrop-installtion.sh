@@ -1,34 +1,27 @@
 #!/bin/bash
+# Complete HashiCorp Vault installation on Ubuntu from scratch
 
-# HashiCorp Vault Installation Script for Ubuntu
-# Run as root or with sudo
+# 1. Update system and install prerequisites
+sudo apt update
+sudo apt install -y gpg curl lsb-release gnupg software-properties-common
 
-set -e  # Exit on any error
+# 2. Download and add HashiCorp GPG key
+wget -O- https://apt.releases.hashicorp.com/gpg | \
+sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 
-echo "Updating system and installing prerequisites..."
-apt update
-apt install -y curl gnupg software-properties-common lsb-release
+# 3. Verify GPG key fingerprint (should match: 798A EC65 4E5C 1542 8C8E 42EE AA16 FCBC A621 E701)
+gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
 
-echo "Adding HashiCorp GPG key..."
-curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+# 4. Add HashiCorp APT repository
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
 
-echo "Adding HashiCorp repository..."
-echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+# 5. Update package lists and install Vault
+sudo apt update
+sudo apt install -y vault
 
-echo "Installing Vault..."
-apt update
-apt install -y vault
+# 6. Verify installation
+vault --version
 
-echo "Verifying installation..."
-vault version
-
-echo "Creating Vault user and directories..."
-useradd --system --home-dir /etc/vault.d --shell /bin/false vault
-mkdir -p /etc/vault.d /opt/vault/data /var/log/vault
-chown -R vault:vault /etc/vault.d /opt/vault /var/log/vault
-chmod 750 /etc/vault.d /opt/vault/data
-
-echo "Vault installed successfully. Next steps:"
-echo "1. Create /etc/vault.d/vault.hcl config file (see example below)"
-echo "2. Enable and start: systemctl enable --now vault"
-echo "3. Initialize: vault operator init (after setting VAULT_ADDR)"
+echo "✅ HashiCorp Vault installed successfully!"
+echo "💡 Next steps: vault server -dev (for testing) or configure production setup"
